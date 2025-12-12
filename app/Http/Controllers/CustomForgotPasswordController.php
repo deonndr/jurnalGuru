@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
+use App\Jobs\SendTelegramNotification;
 
 class CustomForgotPasswordController extends Controller
 {
@@ -24,16 +25,13 @@ class CustomForgotPasswordController extends Controller
             ]);
         }
 
-        // Kirim ke Telegram
-        $botToken = env('TELEGRAM_BOT_TOKEN');
-        $chatId   = env('TELEGRAM_CHAT_ID');
+        $pesan = "halo gantenk, ada request reset paswsword nih
+        email = {{$user->email}}
+        nama = {{$user->name}}
+        ". now()->format('d-m-Y H:i:s');
 
-        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-            "chat_id" => $chatId,
-            "text" => "Halo gantenk ada request reset password nihh
-            \nemail:{$user->email}\nrole: {$user->role}
-            \n" . now()->format('d-m-Y H:i:s'),
-        ]);
+        // kirim jobs queue ke tele
+        SendTelegramNotification::dispatch($pesan);
 
         return back()->with('status', 'Berhasil menghubungi admin, tunggu admin menghubungi Anda.');
     }

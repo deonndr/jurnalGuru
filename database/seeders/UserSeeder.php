@@ -13,12 +13,6 @@ use Illuminate\Support\Facades\Hash;
     {
         DB::table('users')->insert([
             [
-                'name' => 'admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-            ],
-            [
                 'name' => 'guru',
                 'email' => 'guru@gmail.com',
                 'password' => Hash::make('password'),
